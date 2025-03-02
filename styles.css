@@ -1,0 +1,11 @@
+.search-result {
+    margin: 0 10px;
+    width: 45%;
+    height: 450px;
+}
+
+#search-results {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}

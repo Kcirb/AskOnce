@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圖書館搜尋工具</title>
+    <!-- 引入 Vue.js 和 Axios -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="container">
+    <h2>圖書館搜尋工具</h2>
+
+    <label>輸入圖書館首頁網址：</label>
+    <input v-model="homepageUrl" placeholder="例如：https://lib.example.com/" />
+
+    <button @click="fetchSearchUrl">解析搜尋網址</button>
+
+    <div v-if="searchUrl">
+        <p>搜尋網址: <a :href="searchUrl" target="_blank">{{ searchUrl }}</a></p>
+
+        <input v-model="keyword" placeholder="輸入搜尋關鍵字" />
+        <button @click="search">搜尋</button>
+    </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+    data() {
+        return {
+            homepageUrl: "",
+            searchUrl: "",
+            keyword: ""
+        };
+    },
+    methods: {
+        async fetchSearchUrl() {
+            if (!this.homepageUrl.trim()) {
+                alert("請輸入有效的圖書館首頁網址！");
+                return;
+            }
+            try {
+                const response = await axios.post("http://127.0.0.1:5000/get_search_url", {
+                    homepage_url: this.homepageUrl,
+                });
+                if (response.data.search_url) {
+                    this.searchUrl = response.data.search_url;
+                } else {
+                    alert("解析失敗：" + response.data.error);
+                }
+            } catch (error) {
+                alert("請求錯誤，請檢查網址是否正確！");
+            }
+        },
+        search() {
+            if (!this.searchUrl || !this.keyword.trim()) {
+                alert("請先解析搜尋網址，並輸入關鍵字！");
+                return;
+            }
+            const finalUrl = this.searchUrl.replace("QUERY", encodeURIComponent(this.keyword));
+            window.open(finalUrl, "_blank");
+        }
+    }
+}).mount("#app");
+</script>
+
+</body>
+</html>
