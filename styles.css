@@ -1,11 +1,13 @@
-.search-result {
-    margin: 0 10px;
-    width: 45%;
-    height: 450px;
+#search-results-container {
+    display: flex;
+    overflow: auto;
+    margin: 20px;
+    white-space: nowrap;
 }
 
-#search-results {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+.search-result {
+    flex: 0 0 auto;
+    width: 800px;
+    height: 600px;
+    margin-right: 10px;
 }
